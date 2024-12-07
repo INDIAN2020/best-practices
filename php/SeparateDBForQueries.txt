@@ -1,0 +1,103 @@
+Implement Separate DB accounts for running SELECT and DML (INSERT, UPDATE, DELETE) queries in php:
+
+  Advantages:
+    1. Security: Separate permissions ensure that even if a reader account is compromised, DML operations cannot be executed.
+    2. Scalability: You can distribute read and write operations across different database servers.
+    3. Maintainability: Clear separation of concerns for read and write operations.
+
+CODE & PROCEDURE:
+
+  1. Database Configuration
+      Define two separate database connection configurations for read and write operations in your PHP application.
+        $dbConfig = [
+            'read' => [
+                'host' => 'read-db-host',
+                'username' => 'read_user',
+                'password' => 'secure_read_password',
+                'database' => 'your_database'
+            ],
+            'write' => [
+                'host' => 'write-db-host',
+                'username' => 'write_user',
+                'password' => 'secure_write_password',
+                'database' => 'your_database'
+            ]
+        ];
+
+  2. Database Connection Class
+      Create a class to handle separate connections for read and write operations.
+
+        class DatabaseManager
+        {
+            private $readConnection;
+            private $writeConnection;
+        
+            public function __construct($config)
+            {
+                // Create PDO read connection
+                $this->readConnection = new PDO(
+                    $config['read']['host'],
+                    $config['read']['username'],
+                    $config['read']['password'],
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+                // Create PDO write connection
+                $this->writeConnection = new PDO(
+                    $config['write']['host'],
+                    $config['write']['username'],
+                    $config['write']['password'],,
+                    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+                );
+        
+                if ($this->readConnection->connect_error || $this->writeConnection->connect_error) {
+                    throw new RuntimeException('Database connection failed');
+                }
+            }
+        
+            public function getReader()
+            {
+                return $this->readConnection;
+            }
+        
+            public function queryWrite($sql)
+            {
+                return $this->writeConnection;
+            }
+        
+            public function closeConnections()
+            {
+                $this->readConnection->close();
+                $this->writeConnection->close();
+            }
+        }
+
+  3. Usage
+
+      $dbConfig = [
+          'reader' => [
+              'dsn' => 'mysql:host=localhost;dbname=your_database;charset=utf8mb4',
+              'username' => 'reader_user',
+              'password' => 'reader_password',
+          ],
+          'writer' => [
+              'dsn' => 'mysql:host=localhost;dbname=your_database;charset=utf8mb4',
+              'username' => 'writer_user',
+              'password' => 'writer_password',
+          ],
+      ];
+
+      $db = new DatabaseManager($dbConfig);
+      
+      // SELECT Query
+      $reader = $db->getReader();
+      $stmt = $reader->prepare('SELECT * FROM users WHERE id = :id');
+      $stmt->execute(['id' => 1]);
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      print_r($result);
+      
+      // INSERT Query
+      $writer = $db->getWriter();
+      $stmt = $writer->prepare('INSERT INTO users (name, email) VALUES (:name, :email)');
+      $stmt->execute(['name' => 'John Doe', 'email' => 'john.doe@example.com']);
+
+
