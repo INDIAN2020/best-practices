@@ -1,0 +1,266 @@
+Design principles are essential for creating clean, maintainable, and efficient PHP applications. Below are fundamental design principles commonly applied in PHP development:
+
+1. Single Responsibility Principle (SRP)
+	
+	#——————————————————————————————————————————————————————
+	A class should have only one reason to change.
+	#——————————————————————————————————————————————————————
+
+	Explanation: 
+		Each class should focus on a single responsibility. This makes the class easier to understand, test, and maintain.
+
+	Example:
+		'''php
+			class ReportGenerator {
+			    public function generateReport(array $data): string {
+			        // Generate the report
+			        return json_encode($data);
+			    }
+			}
+
+			class ReportSaver {
+			    public function saveToFile(string $report, string $filePath): void {
+			        file_put_contents($filePath, $report);
+			    }
+			}
+
+			// Each class has one responsibility: generating or saving the report.
+		'''
+
+2. Open/Closed Principle (OCP)
+
+	#——————————————————————————————————————————————————————
+	Classes should be open for extension but closed for modification.
+	#——————————————————————————————————————————————————————
+
+	Explanation: 
+		You should be able to add new functionality without changing existing code.
+
+	Example:
+		'''php
+			interface PaymentProcessor {
+			    public function processPayment(float $amount): void;
+			}
+
+			class StripeProcessor implements PaymentProcessor {
+			    public function processPayment(float $amount): void {
+			        echo "Processing $amount with Stripe.";
+			    }
+			}
+
+			class PayPalProcessor implements PaymentProcessor {
+			    public function processPayment(float $amount): void {
+			        echo "Processing $amount with PayPal.";
+			    }
+			}
+
+			// Adding a new payment method only requires implementing the interface, not modifying existing code.
+		'''
+
+3. Liskov Substitution Principle (LSP)
+	
+	#——————————————————————————————————————————————————————
+	Subtypes must be substitutable for their base types.
+	#——————————————————————————————————————————————————————
+
+	Explanation: 
+		Derived classes must be able to replace their base classes without affecting functionality.
+
+	Example:
+		'''php
+			class Rectangle {
+			    protected $width;
+			    protected $height;
+
+			    public function setWidth(float $width): void {
+			        $this->width = $width;
+			    }
+
+			    public function setHeight(float $height): void {
+			        $this->height = $height;
+			    }
+
+			    public function getArea(): float {
+			        return $this->width * $this->height;
+			    }
+			}
+
+			class Square extends Rectangle {
+			    public function setWidth(float $width): void {
+			        $this->width = $width;
+			        $this->height = $width;
+			    }
+
+			    public function setHeight(float $height): void {
+			        $this->width = $height;
+			        $this->height = $height;
+			    }
+			}
+
+			// Square violates LSP because it changes the behavior of setWidth and setHeight.
+		'''
+
+4. Interface Segregation Principle (ISP)
+	
+	#——————————————————————————————————————————————————————
+	A class should not be forced to implement methods it does not use.
+	#——————————————————————————————————————————————————————
+
+	Explanation: 
+		Break large interfaces into smaller, more specific ones to avoid "fat" interfaces.
+
+	Example:
+		'''php
+			interface Printer {
+			    public function print(): void;
+			}
+
+			interface Scanner {
+			    public function scan(): void;
+			}
+
+			class MultiFunctionPrinter implements Printer, Scanner {
+			    public function print(): void {
+			        echo "Printing...";
+			    }
+
+			    public function scan(): void {
+			        echo "Scanning...";
+			    }
+			}
+
+			class SimplePrinter implements Printer {
+			    public function print(): void {
+			        echo "Printing...";
+			    }
+			}
+
+			// SimplePrinter doesn't need to implement scan() unnecessarily.
+
+		'''
+
+5. Dependency Inversion Principle (DIP)
+
+	#——————————————————————————————————————————————————————
+	High-level modules should not depend on low-level modules. Both should depend on abstractions.
+	#——————————————————————————————————————————————————————
+
+	Explanation: 
+		Use interfaces or abstractions instead of concrete implementations.
+
+	Example:
+		'''php
+			interface NotificationService {
+			    public function send(string $message): void;
+			}
+
+			class EmailService implements NotificationService {
+			    public function send(string $message): void {
+			        echo "Sending email: $message";
+			    }
+			}
+
+			class User {
+			    private NotificationService $notificationService;
+
+			    public function __construct(NotificationService $notificationService) {
+			        $this->notificationService = $notificationService;
+			    }
+
+			    public function notify(string $message): void {
+			        $this->notificationService->send($message);
+			    }
+			}
+
+			// The User class depends on the abstraction (NotificationService), not the implementation.
+		'''
+
+6. DRY (Don't Repeat Yourself)
+	
+	#——————————————————————————————————————————————————————
+	Avoid duplication by centralizing code that is used multiple times.
+	#——————————————————————————————————————————————————————
+	
+	Example:
+		'''php
+			class DiscountCalculator {
+			    public function calculate(float $price, float $discountRate): float {
+			        return $price - ($price * $discountRate);
+			    }
+			}
+
+			// Avoid recalculating the discount logic in multiple places.
+		'''
+
+7. KISS (Keep It Simple, Stupid)
+	
+	#——————————————————————————————————————————————————————
+	Keep your code simple and avoid overengineering.
+	#——————————————————————————————————————————————————————
+
+	Example:
+		'''php
+			// Overcomplicated
+			function calculateSum(array $numbers): float {
+			    $sum = 0;
+			    foreach ($numbers as $number) {
+			        $sum += $number;
+			    }
+			    return $sum;
+			}
+
+			// Simple
+			function calculateSum(array $numbers): float {
+			    return array_sum($numbers);
+			}
+
+		'''
+
+8. YAGNI (You Aren't Gonna Need It)
+	
+	#——————————————————————————————————————————————————————
+	Only implement features that are required.
+	#——————————————————————————————————————————————————————
+
+	Example:
+		'''php
+			class User {
+			    private string $username;
+
+			    public function __construct(string $username) {
+			        $this->username = $username;
+			    }
+
+			    // Don't add unnecessary methods or properties until they're needed.
+			}
+		'''
+
+9. Composition Over Inheritance
+
+	#——————————————————————————————————————————————————————
+	Favor composition (using objects as properties) over inheritance to reduce coupling.
+	#——————————————————————————————————————————————————————
+
+	Example:
+		'''php
+			class Engine {
+			    public function start(): void {
+			        echo "Engine started.";
+			    }
+			}
+
+			class Car {
+			    private Engine $engine;
+
+			    public function __construct(Engine $engine) {
+			        $this->engine = $engine;
+			    }
+
+			    public function drive(): void {
+			        $this->engine->start();
+			        echo "Driving...";
+			    }
+			}
+
+			// Composition allows flexible reuse of the Engine class.
+		'''
