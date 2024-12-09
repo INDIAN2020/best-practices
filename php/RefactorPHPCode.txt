@@ -1,0 +1,195 @@
+Why Refactor PHP Code?
+
+	Refactoring isn't just about making your code look pretty; it's about enhancing performance, reducing bugs, and making your codebase more understandable for future developers (including yourself!). Here are some key reasons why you should refactor your PHP code:
+
+		01). Improved Readability: Clean code is easier to read and understand.
+		02). Enhanced Performance: Optimized code runs faster and more efficiently.
+		03). Reduced Bugs: Well-structured code is less prone to errors.
+		04). Easier Maintenance: Refactored code is simpler to maintain and update. 
+
+How to Refactor PHP Code ?
+
+    1. Break Down Large Functions:
+    	
+    	One of the most common issues in PHP code is the presence of large, unwieldy functions. These can be a nightmare to debug and maintain. The solution? Break them down into smaller, more manageable pieces.
+    
+    	By splitting your functions into smaller, focused pieces, you make your code easier to read and maintain. Each function should have a single responsibility, making it simpler to test and debug.
+    
+    2. Eliminate Duplicate Code
+     
+    	Duplicate code is a common issue that can lead to maintenance nightmares. If you find yourself copying and pasting the same code snippets, it's time to refactor. Create reusable functions or classes to eliminate redundancy.
+    
+    3. Use Meaningful Variable Names
+     
+    	Variable names should be descriptive and meaningful. Avoid using single letters or abbreviations that may confuse other developers (or yourself in the future). Good variable names make your code self-explanatory and reduce the need for excessive comments.
+    
+    	Using meaningful variable names helps improve the readability of your code and makes it easier to understand the purpose of each variable.
+    
+    4. Leverage PHP's Built-in Functions
+     
+    	PHP has a plethora of built-in functions that can simplify your code and improve performance. Instead of reinventing the wheel, use these functions to handle common tasks like string manipulation, array operations, and more.
+    
+    	By leveraging PHP's built-in functions, you can write cleaner, more efficient code that is easier to maintain.
+    
+     
+    5. Implement Error Handling
+    
+    	Effective error handling is crucial for robust PHP applications. Ensure that you catch and handle errors gracefully, providing meaningful error messages to users and developers alike.
+    
+    		try {
+    		    // Code that may throw an exception
+    		    $result = performOperation($data);
+    		} catch (Exception $e) {
+    		    echo 'An error occurred: ' . $e->getMessage();
+    		} 
+    	 
+    	Proper error handling helps you identify and fix issues quickly, improving the overall reliability of your application.
+    
+     
+    6. Optimize Database Queries
+     
+    	Database queries can be a significant bottleneck in PHP applications. Refactoring your queries to be more efficient can improve your application's performance dramatically.
+    
+    		// Inefficient query
+    		SELECT * FROM users WHERE status = 'active';
+    
+    		// Optimized query
+    		SELECT id, name, email FROM users WHERE status = 'active'; 
+    
+    	By selecting only the necessary columns and optimizing your queries, you can reduce the load on your database and improve your application's performance.
+    
+     
+    7. Use Object-Oriented Programming (OOP)
+     
+    	PHP supports object-oriented programming, which can help you organize your code more effectively. By using classes and objects, you can encapsulate your code, making it more modular and reusable.
+    
+    
+    		class User {
+    		    private $name;
+    		    private $email;
+    
+    		    public function __construct($name, $email) {
+    		        $this->name = $name;
+    		        $this->email = $email;
+    		    }
+    
+    		    public function getName() {
+    		        return $this->name;
+    		    }
+    
+    		    public function getEmail() {
+    		        return $this->email;
+    		    }
+    		}
+    
+    	$user = new User('John Doe', 'john@example.com');
+    
+    	Using OOP principles can help you write more organized and maintainable code. Encapsulation, inheritance, and polymorphism are powerful tools for refactoring your PHP code. 
+    
+    
+    8. Avoid Deep Nesting
+    
+    	Deeply nested code can be difficult to read and maintain. Try to avoid excessive nesting by breaking down your logic into smaller functions or using early returns to simplify control flow.
+    
+    
+    		// Deeply nested code
+    		if ($condition1) {
+    		    if ($condition2) {
+    		        if ($condition3) {
+    		            // Do something
+    		        }
+    		    }
+    		}
+    
+    		// Refactored code with early returns
+    		if (!$condition1) return;
+    		if (!$condition2) return;
+    		if (!$condition3) return;
+    		// Do something
+    
+    	By avoiding deep nesting, you make your code easier to read and maintain, reducing the cognitive load on developers. 
+    
+    9. Use Composer for Dependency Management
+    
+    	Composer is a powerful tool for managing PHP dependencies. By using Composer, you can easily include and manage external libraries, making your codebase more modular and maintainable.
+    
+    
+    		// composer.json example
+    		{
+    		    "require": {
+    		        "monolog/monolog": "^2.0"
+    		    }
+    		}
+    
+    	Using Composer helps you manage your dependencies more effectively, keeping your codebase clean and organized. 
+    
+    10. Document Your Code
+    
+    	Documentation is essential for understanding and maintaining your codebase. Use inline comments and PHPDoc comments to document your code, explaining the purpose of functions, classes, and complex logic.
+    
+    
+    		/*
+    		  This function calculates the total price of an order.
+    		 
+    		  @param float $price The price of the item.
+    		  @param int $quantity The quantity of the item.
+    		  @return float The total price.
+    		 /
+    		function calculateTotalPrice($price, $quantity) {
+    		    return $price  $quantity;
+    		}
+    
+    	Good documentation makes your code easier to understand and maintain, benefiting both you and other developers who may work on your code. 
+
+
+
+To refactor PHP code we can use various strategies:
+	
+	DUPLICATE CODE:
+
+		For example, when we have two equal code blocks within the same class, we can simply extract the method and invoke the call in both places. 
+
+		If instead we have two identical methods in different classes that extend the same class, we can move the method in the parent class and delete it from the other two subclasses.
+
+		If the code is similar but not exactly the same, we must first extract the method with the equal parts and then move it to the parent class.
+
+		If we have two methods that do the same thing but with two different algorithms, we can choose which algorithm is the best and use only it and substitute the algorithm.
+
+		If you have duplicate code in classes that are not related, we can think of creating a parent class and move the method, or if the objects cannot be children of the same class, we may decide to keep the method in a single class and invoke it from a related class, or to create a third class and invoke the method of this third class in the other two.
+
+	LARGE CLASS:
+
+		The two best strategies are to combine the attributes that go well together, such as attributes with the same prefixes or suffixes, e.g., home_address and office_address, or fax_number and phone_number, and extract new classes that include these similar attributes.
+
+		If the attributes belong strongly to class and can’t be merged, but they are used differently in different instances of the same class, we can extract subclasses and divide these attributes in these subclasses. Or, if we just have to extract attributes and non-logical behavior, we can use interfaces rather than classes.
+
+	LONG METHOD:
+
+		The most common strategy to refactor this type of software is the extract method. We find pieces of code that go great together and put them in an external method. One heuristic method that we can use to correctly separate the code is to follow the comments. Since reading long code is very difficult, diligent programmers often comment on blocks of code that explain what they do.
+
+	LONG PARAMETER LIST:
+
+		when we have parameters that can be grouped into a single object we can introduce a parameter object and pass it directly to the method rather than individual parameters. Instead, if we are passing the individual attributes of the same object, we can preserve the whole object and pass the object directly.
+
+		If we invoke a method and then pass the result directly to another method, we can replace the parameter with the method and call it directly into the later-invoked method.
+
+	SWITCH STATEMENTS:
+
+		Using switches in this way, we forget that in object-oriented programming this type of behavior has the name “polymorphism” and is a property of objects themselves.
+
+		Through the polymorphism property we can remove conditional logic, since the change occurs according to the type of the object itself, not because someone knows how to choose based on the value of a given parameter.
+
+		Sometimes the polymorphism may not be the appropriate solution. In this case we can simply replace the condition code with the methods, and in cases where the condition must return null, we can think of introducing a NullObject.
+
+NOTE:
+	NullObject: 
+		When we are implementing a interface on a class and the method of interface implementation with empty / no-op behavior then it is called NullObject when Object instantiated.
+	
+	Purpose:
+		It has the following benefits:
+
+			1. Client code is simplified
+			2. Reduces the chance of null pointer exceptions (ERROR: Trying to get property of non-object)
+			3. Fewer conditionals require less test cases
+		
+		Methods that return an object or null should instead return an object or NullObject. NullObjects simplify boilerplate code such as if (!is_null($obj)) { $obj->callSomething(); } to just $obj->callSomething(); by eliminating the conditional check in client code.
